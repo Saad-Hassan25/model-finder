@@ -6,6 +6,10 @@ The original architecture is retained: a shared skill interprets the task and co
 
 One `skills/model-finder` directory is the source of truth. Claude and Codex plugin manifests point at the repository layout. The installer copies the full directory for clients supporting Agent Skills. OpenCode uses its native skill mechanism, not a JavaScript plugin that intercepts requests.
 
+The guided installer is a Node.js executable fetched directly from GitHub through npx. It collects client/scope/data choices for people and accepts explicit flags with JSON output for agents. It merges client-native MCP config with JSONC/TOML parsers, leaves unrelated settings in place, and backs up changed files. Existing identical installations are reused. Expected conflicts are detected before writes; unexpected filesystem failures report completed paths. OAuth is delegated to the client and never runs in JSON mode. The legacy Python copy helper remains available for manual/offline skill-only installation.
+
+Installation follows the familiar [Skills CLI](https://skills.sh/docs/cli) pattern, with [npm's single-bin package resolution](https://docs.npmjs.com/cli/v11/commands/npx/) and configuration formats documented by [Claude Code](https://code.claude.com/docs/en/mcp), [official OpenAI documentation](https://learn.chatgpt.com/docs/extend/mcp), and [OpenCode](https://opencode.ai/docs/mcp-servers/).
+
 ## Deliberately separate responsibilities
 
 The agent interprets the user's task, verifies identities and source relevance, checks provider policies, and explains tradeoffs. The optional standard-library Python script handles repeatable arithmetic and catalog constraints. It accepts explicit comparable benchmark evidence rather than silently guessing cross-provider model mappings.

@@ -6,7 +6,7 @@ import sys
 from zipfile import ZIP_DEFLATED, ZipFile
 
 ROOT = Path(__file__).resolve().parents[1]
-INCLUDE = (".claude-plugin", ".codex-plugin", ".agents/plugins", ".mcp.json", "skills", "scripts", "assets/brand", "install.ps1", "install.sh", "README.md", "LICENSE", "docs", "examples")
+INCLUDE = (".claude-plugin", ".codex-plugin", ".agents/plugins", ".mcp.json", "skills", "scripts", "bin", "package.json", "package-lock.json", "INSTALL.md", "assets/brand", "install.ps1", "install.sh", "README.md", "LICENSE", "docs", "examples")
 
 
 def build(output=None):

@@ -34,10 +34,14 @@ def validate(root=ROOT):
             errors.append("Plugin names must match the model-finder skill.")
     try:
         versions = [claude["version"], codex["version"], marketplace["plugins"][0]["version"]]
+        package = json.loads((root / "package.json").read_text(encoding="utf-8"))
+        versions.append(package["version"])
+        if package.get("bin") != {"model-finder-install": "bin/install.mjs"} or not (root / "bin/install.mjs").is_file():
+            errors.append("The npm package must expose the guided installer.")
         tree = ast.parse((root / "skills/model-finder/scripts/model_finder.py").read_text(encoding="utf-8"))
         versions.extend(ast.literal_eval(node.value) for node in tree.body if isinstance(node, ast.Assign)
                         and any(isinstance(t, ast.Name) and t.id == "VERSION" for t in node.targets))
-        if len(versions) != 4 or len(set(versions)) != 1:
+        if len(versions) != 5 or len(set(versions)) != 1:
             errors.append("Helper, plugin, and marketplace versions must agree.")
         if not all(re.fullmatch(r"\d+\.\d+\.\d+", version) for version in versions):
             errors.append("Versions must use major.minor.patch.")
@@ -71,7 +75,7 @@ def validate(root=ROOT):
             errors.append("Installed skill must carry the repository's MIT license.")
     except OSError:
         errors.append("Repository or skill license missing.")
-    paths = [root / "README.md", root / "CONTRIBUTING.md"]
+    paths = [root / "README.md", root / "CONTRIBUTING.md", root / "INSTALL.md", root / "AGENTS.md"]
     for folder in ("skills", "docs"):
         paths.extend((root / folder).rglob("*.md"))
     for path in paths:

@@ -1,5 +1,17 @@
 # Setup
 
+## Guided installation
+
+Run from your terminal in any directory:
+
+```bash
+npx --yes github:Saad-Hassan25/Model-Selector
+```
+
+Choose your clients, project/all-project scope, data connections, and whether to sign in. The installer handles skill files and MCP configuration together. Node.js 22+ and Git are required; Python is only needed for the optional research helper.
+
+For non-interactive installation, upgrades, paths, and JSON results, see [INSTALL.md](../INSTALL.md). The sections below describe alternative/manual routes and how to manage individual connections after installation.
+
 ## Pick an installation route
 
 | Client | Skill-only location (user scope) | Invocation |
@@ -10,7 +22,7 @@
 
 OpenCode also discovers `.agents/skills` and `.claude/skills`. If you already installed there for another client, OpenCode can reuse that copy; avoid an extra copy with the same skill name. Its native user directory honors `XDG_CONFIG_HOME` in the installer. Agent Skills clients beyond these three can use the same directory if they support the format.
 
-### Installer
+### Legacy Python copy helper
 
 Python 3.10+; no pip packages. Run from the checkout or extracted release:
 
@@ -27,7 +39,7 @@ python scripts/install.py --target claude --scope project --project-dir /path/to
 
 On Windows, a quoted path such as `"D:\Work\My App"` works. Wrappers `install.ps1` and `install.sh` accept the same arguments. All scripts resolve bundled resources relative to their own location, so you can run them from another working directory.
 
-The installer stages the entire skill then renames it into place. It does not overwrite, authenticate, install dependencies, or edit client configuration. For upgrades, move the old `model-finder` directory aside and run the installer again. For removal, remove that installed directory. MCP connections are independent and remain until removed with the client's settings or MCP commands.
+This Python copy helper stages the entire skill then renames it into place. It does not overwrite, authenticate, install dependencies, or edit client configuration. For upgrades, move the old `model-finder` directory aside and run the helper again. For removal, remove that installed directory. MCP connections are independent and remain until removed with the client's settings or MCP commands. The guided npx installer above also handles MCP setup and backed-up upgrades.
 
 ### Manual installation (no Python)
 
@@ -71,7 +83,7 @@ These subcommands are present in the locally checked Codex CLI 0.141.0. Client s
 
 ## Connect research data
 
-For **skill-only installations**, configure the integrations below. The plugin already bundles their URLs. The installer never writes secrets or initiates OAuth.
+For **skill-only installations**, configure the integrations below. The plugin already bundles their URLs. The legacy Python helper does not configure these connections; the guided npx installer can add them and launch the client's OAuth flow.
 
 ### OpenRouter
 

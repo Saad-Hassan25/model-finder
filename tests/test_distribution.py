@@ -77,7 +77,7 @@ class DistributionTests(unittest.TestCase):
             output = package.build(Path(temp) / "release.zip")
             with ZipFile(output) as archive:
                 names = set(archive.namelist())
-                for required in (".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".agents/plugins/marketplace.json", ".mcp.json", "skills/model-finder/SKILL.md", "skills/model-finder/scripts/model_finder.py", "scripts/install.py", "LICENSE", "docs/setup.md"):
+                for required in (".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".agents/plugins/marketplace.json", ".mcp.json", "skills/model-finder/SKILL.md", "skills/model-finder/scripts/model_finder.py", "scripts/install.py", "bin/install.mjs", "package.json", "package-lock.json", "INSTALL.md", "LICENSE", "docs/setup.md"):
                     self.assertIn(required, names)
                 for name in names:
                     self.assertFalse(any(part in name for part in ("Initial Work", "__pycache__", ".env", ".model-finder/", ".git/")), name)

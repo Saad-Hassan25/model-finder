@@ -1,0 +1,19 @@
+{
+  "name": "model-finder-skill",
+  "version": "0.1.0",
+  "description": "Install Model Finder for Claude Code, Codex, and OpenCode with one guided command.",
+  "type": "module",
+  "license": "MIT",
+  "repository": { "type": "git", "url": "https://github.com/Saad-Hassan25/Model-Selector.git" },
+  "bin": { "model-finder-install": "bin/install.mjs" },
+  "engines": { "node": ">=22" },
+  "files": [
+    "bin/**/*.mjs", "skills/model-finder/SKILL.md", "skills/model-finder/LICENSE",
+    "skills/model-finder/agents/*.yaml", "skills/model-finder/references/*.md", "skills/model-finder/scripts/*.py",
+    "docs/*.md", "examples/*.json", "assets/brand/*.png", "scripts/*.py",
+    ".claude-plugin/*.json", ".codex-plugin/*.json", ".agents/plugins/*.json", ".mcp.json",
+    "INSTALL.md", "AGENTS.md", "CONTRIBUTING.md", "install.ps1", "install.sh"
+  ],
+  "scripts": { "test": "node --test tests/install.test.mjs", "check": "node --check bin/install.mjs" },
+  "dependencies": { "jsonc-parser": "3.3.1", "smol-toml": "1.9.1" }
+}

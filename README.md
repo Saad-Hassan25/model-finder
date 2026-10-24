@@ -46,101 +46,52 @@ Use it directly when choosing a model, or let your coding agent use it while bui
 
 ## Quick start
 
-**Before you begin:** install and sign in to your coding client, have an OpenRouter account, and install Python 3.10+ for the installer. No pip packages are needed. Prefer to copy files? Use the [manual installation instructions](docs/setup.md#manual-installation-no-python).
-
-Download this repository using **Code → Download ZIP** and extract it, or clone it. Open a terminal in the folder containing this `README.md` and `scripts/`.
-
-Follow the section for your client: **[Claude Code](#claude-code)** · **[Codex](#codex)** · **[OpenCode](#opencode)**.
-
-The examples use `python`. If needed, use `python3` on macOS/Linux or `py -3` on Windows instead. Installation is for your user account, so the skill can be used across projects.
-
-### Claude Code
-
-**1. Install the skill and connect OpenRouter.** Run in your terminal:
+Run this in your VS Code terminal or any terminal:
 
 ```bash
-python scripts/install.py --target claude
-claude mcp add --transport http --scope user openrouter https://mcp.openrouter.ai/mcp
-claude mcp login openrouter
+npx --yes github:Saad-Hassan25/Model-Selector
 ```
 
-**2. Finish the browser login.** Then open a new Claude Code session in your project. If your Claude version does not have `mcp login`, enter `/mcp` inside Claude Code and authenticate OpenRouter there.
+The installer asks **which clients** (Claude Code, Codex, OpenCode, or several), **this project or all projects**, and **which data sources** to connect. It installs the skill, merges MCP settings, and can launch browser sign-in. Start a new client session when it finishes.
 
-**3. Ask inside Claude Code:**
+**Requires Node.js 22+ and Git.** No manual download, clone, or Python setup. Run inside your project for a project installation, or choose all projects from any directory. Existing settings are preserved and backed up when changed.
+
+### Let your agent install it
+
+Give Claude Code, Codex, or OpenCode this prompt:
 
 ```text
-/model-finder Find the cheapest viable model for tool calling and JSON Schema output.
-Use current OpenRouter prices and independent benchmarks.
+Install Model Finder from https://github.com/Saad-Hassan25/Model-Selector
+for this project. Follow INSTALL.md and report any sign-in I need to complete.
 ```
 
-### Codex
-
-**1. Install the skill and connect OpenRouter.** Run in your terminal:
+Agents have a non-interactive installer with explicit scope and JSON output. For example, Codex in the current project:
 
 ```bash
-python scripts/install.py --target codex
-codex mcp add openrouter --url https://mcp.openrouter.ai/mcp
-codex mcp login openrouter
+npx --yes github:Saad-Hassan25/Model-Selector --agent codex --scope project --yes --json
 ```
 
-**2. Finish the browser login.** Then open a new Codex session in your project.
+Use `--scope global` for all projects, `--agent claude-code` or `--agent opencode` for another client, and `--connections both` to include Artificial Analysis. See [INSTALL.md](INSTALL.md) for all flags, upgrades, and the agent installation contract.
 
-**3. Ask inside Codex:**
+### Other skill clients
 
-```text
-$model-finder Find the best-value model for Python code generation.
-Compare live OpenRouter prices and independent coding benchmarks.
-```
-
-### OpenCode
-
-**1. Install the skill.** Run in your terminal:
+If you use the Skills CLI, or want its wider client selection:
 
 ```bash
-python scripts/install.py --target opencode
+npx skills add Saad-Hassan25/Model-Selector --skill model-finder
 ```
 
-If you already installed this skill for Claude Code or Codex, OpenCode can discover that copy; skip installing another copy.
-
-**2. Add OpenRouter to your OpenCode config.** Create `~/.config/opencode/opencode.json` with the following content, or merge the `mcp.openrouter` entry into your existing config. A project-level `opencode.json` also works. Keep your other settings.
-
-```json
-{
-  "$schema": "https://opencode.ai/config.json",
-  "mcp": {
-    "openrouter": {
-      "type": "remote",
-      "url": "https://mcp.openrouter.ai/mcp",
-      "enabled": true
-    }
-  }
-}
-```
-
-**3. Authenticate.** Run in your terminal and finish the browser login:
-
-```bash
-opencode mcp auth openrouter
-```
-
-**4. Open a new OpenCode session and ask:**
-
-```text
-Use the model-finder skill. Find three low-cost models for my RAG app.
-Require tool calling and compare current prices and benchmark evidence.
-```
-
-### Optional setup and troubleshooting
-
-- **Already connected?** Skip `mcp add` if OpenRouter is already configured in that client; authenticate if needed.
-- **Want the native plugin?** Follow the [Claude Code plugin](docs/setup.md#claude-code-plugin) or [Codex plugin](docs/setup.md#codex-plugin) instructions instead of installing a second copy of the skill. The Claude plugin command is `/model-finder:model-finder`.
-- **Artificial Analysis:** OpenRouter already exposes third-party benchmarks. A separate [Artificial Analysis connection](docs/setup.md#artificial-analysis-optional-independent-connection) is optional.
-- **Other Agent Skills clients:** copy the complete `skills/model-finder/` folder into that client's documented skill directory, then connect a supported live data source.
-- **Install or login trouble?** See [setup and troubleshooting](docs/setup.md#check-the-setup). The installer leaves existing skills untouched; move an old `model-finder` folder aside before upgrading.
+This route installs the skill; use the [MCP connection guide](docs/setup.md#connect-research-data) for live data access. Native [Claude Code](docs/setup.md#claude-code-plugin) and [Codex](docs/setup.md#codex-plugin) plugins are also available. Choose one installation route per client.
 
 ### Ask
 
-Describe your actual workload for a more useful comparison:
+| Client | Start your request with |
+| --- | --- |
+| Claude Code | `/model-finder` |
+| Codex | `$model-finder` |
+| OpenCode | `Use the model-finder skill.` |
+
+Then describe the workload:
 
 ```text
 I’m building an agentic RAG system with tool calling and JSON Schema outputs.
@@ -149,7 +100,7 @@ Estimate cost for 3,000 input + 500 output tokens and 100,000 requests/month.
 Compare independent benchmarks and include promising recent releases.
 ```
 
-Start with your client's invocation shown above, then describe the workload. If you do not know token counts or volume yet, the skill can use clearly labeled assumptions.
+The native Claude plugin uses `/model-finder:model-finder`. Need help? See [setup and troubleshooting](docs/setup.md#check-the-setup).
 
 ## How it works
 
@@ -209,7 +160,9 @@ skills/model-finder/       Shared Agent Skill, references, and standalone helper
 .mcp.json                 Official research MCP endpoints; no credentials
 assets/brand/             Original logo and README banner
 examples/                 OpenCode config and clearly synthetic demo data
-scripts/                  Installer, repository validation, release packaging
+bin/                      Guided npx installer and MCP configuration
+scripts/                  Validation, release packaging, legacy Python copy helper
+INSTALL.md                Human and agent installation instructions
 tests/                    Offline behavior and integration tests
 docs/                     Setup and design decisions
 .github/                  CI, issue templates, and pull request template
@@ -222,12 +175,14 @@ Logo files and generation prompts are documented in [branding](docs/branding.md)
 ## Development
 
 ```bash
+npm ci --ignore-scripts
+npm test
 python -m unittest discover -s tests -v
 python scripts/validate.py
 python scripts/package.py
 ```
 
-CI runs offline checks on Windows, macOS, and Linux with Python 3.10 and 3.13, then builds an installable ZIP. There are no live API calls in CI. Read [CONTRIBUTING.md](CONTRIBUTING.md) for changes and [docs/design.md](docs/design.md) for the architecture and current boundaries.
+CI runs the Node.js installer tests and Python checks on Windows, macOS, and Linux, then builds an installable ZIP. There are no live API calls in CI. Read [CONTRIBUTING.md](CONTRIBUTING.md) for changes and [docs/design.md](docs/design.md) for the architecture and current boundaries.
 
 The ZIP builder uses an allowlist and excludes local notes, credentials, caches, and live data snapshots.
 
