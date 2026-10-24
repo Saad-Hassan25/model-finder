@@ -1,0 +1,15 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "openrouter": {
+      "type": "remote",
+      "url": "https://mcp.openrouter.ai/mcp",
+      "enabled": true
+    },
+    "artificial-analysis": {
+      "type": "remote",
+      "url": "https://mcp.artificialanalysis.ai/mcp",
+      "enabled": true
+    }
+  }
+}

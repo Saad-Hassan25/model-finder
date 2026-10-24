@@ -1,0 +1,12 @@
+{
+  "name": "model-finder-marketplace",
+  "interface": { "displayName": "Model Finder" },
+  "plugins": [
+    {
+      "name": "model-finder",
+      "source": { "source": "local", "path": "./" },
+      "policy": { "installation": "AVAILABLE", "authentication": "ON_INSTALL" },
+      "category": "Developer Tools"
+    }
+  ]
+}

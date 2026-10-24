@@ -1,0 +1,15 @@
+{
+  "name": "model-finder-marketplace",
+  "owner": { "name": "Model Finder contributors" },
+  "metadata": {
+    "description": "Model Finder: evidence-based AI model selection using live pricing and benchmarks."
+  },
+  "plugins": [
+    {
+      "name": "model-finder",
+      "source": "./",
+      "description": "Live, evidence-based AI model selection.",
+      "version": "0.1.0"
+    }
+  ]
+}

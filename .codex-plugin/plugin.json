@@ -1,0 +1,7 @@
+{
+  "name": "model-finder",
+  "version": "0.1.0",
+  "description": "Find AI models by task, cost, capabilities, and independent benchmark evidence.",
+  "skills": "./skills/",
+  "mcpServers": "./.mcp.json"
+}

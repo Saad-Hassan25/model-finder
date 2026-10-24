@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source_url": "https://example.com/synthetic-catalog-not-live-data",
+  "retrieved_at": "2026-01-01T00:00:00Z",
+  "response": {
+    "data": [
+      {
+        "id": "example/budget",
+        "name": "Fictional Budget",
+        "created": 1767225600,
+        "context_length": 131072,
+        "architecture": {"input_modalities": ["text"], "output_modalities": ["text"]},
+        "pricing": {"prompt": "0.0000001", "completion": "0.0000004"},
+        "top_provider": {"context_length": 131072, "max_completion_tokens": 8192},
+        "supported_parameters": ["tools", "structured_outputs", "response_format"]
+      },
+      {
+        "id": "example/balanced",
+        "name": "Fictional Balanced",
+        "created": 1767312000,
+        "context_length": 262144,
+        "architecture": {"input_modalities": ["text", "image"], "output_modalities": ["text"]},
+        "pricing": {"prompt": "0.0000005", "completion": "0.000002"},
+        "top_provider": {"context_length": 262144, "max_completion_tokens": 32768},
+        "supported_parameters": ["tools", "structured_outputs", "response_format"]
+      },
+      {
+        "id": "example/premium",
+        "name": "Fictional Premium",
+        "created": 1767398400,
+        "context_length": 262144,
+        "architecture": {"input_modalities": ["text", "image"], "output_modalities": ["text"]},
+        "pricing": {"prompt": "0.000003", "completion": "0.000015"},
+        "top_provider": {"context_length": 262144, "max_completion_tokens": 32768},
+        "supported_parameters": ["tools", "structured_outputs", "response_format"]
+      },
+      {
+        "id": "example/dominated",
+        "name": "Fictional Dominated",
+        "created": 1767484800,
+        "context_length": 131072,
+        "architecture": {"input_modalities": ["text"], "output_modalities": ["text"]},
+        "pricing": {"prompt": "0.000001", "completion": "0.000004"},
+        "top_provider": {"context_length": 131072, "max_completion_tokens": 8192},
+        "supported_parameters": ["tools", "structured_outputs", "response_format"]
+      }
+    ]
+  }
+}

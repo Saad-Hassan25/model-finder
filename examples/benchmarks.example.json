@@ -1,0 +1,14 @@
+{
+  "metric": "Synthetic coding pass rate; demonstration only",
+  "version": "demo-1",
+  "configuration": "Same fictional harness and output budget",
+  "direction": "higher",
+  "source_url": "https://example.com/synthetic-evaluation",
+  "as_of": "2026-01-01",
+  "models": [
+    { "openrouter_id": "example/budget", "score": 60 },
+    { "openrouter_id": "example/balanced", "score": 85 },
+    { "openrouter_id": "example/premium", "score": 90 },
+    { "openrouter_id": "example/dominated", "score": 75 }
+  ]
+}
