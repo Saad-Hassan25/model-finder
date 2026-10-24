@@ -10,6 +10,8 @@ One `skills/model-finder` directory is the source of truth. Claude and Codex plu
 
 The agent interprets the user's task, verifies identities and source relevance, checks provider policies, and explains tradeoffs. The optional standard-library Python script handles repeatable arithmetic and catalog constraints. It accepts explicit comparable benchmark evidence rather than silently guessing cross-provider model mappings.
 
+OpenRouter's official benchmark and analytics skills inform two optional paths: source-specific benchmark snapshots in the GET-only helper, and authorized usage aggregates for replacement decisions. Upstream skills are linked rather than vendored or installed. Account analytics is outside the helper; it has a different credential scope and is not needed for general model discovery.
+
 The helper supports text-token cost comparisons and advertised catalog capabilities across available modalities. It retains additional pricing fields and flags that they are excluded from its arithmetic. Media-specific billing, provider SLA/privacy enforcement, live latency ranking, and task evaluation require further evidence; they are not simulated by the CLI.
 
 There is no automatic paid evaluation, runtime router, proxy, or host-model switch. If a user asks to integrate a selected model into an application, the agent uses normal coding tools within that request. Adding an actual runtime router later would require explicit rules for failure modes, retries, budgets, provider credentials, and data transmission.

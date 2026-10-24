@@ -16,13 +16,22 @@ Price caps `--max-input-price` and `--max-output-price` are **USD per million to
 
 ## Benchmark-assisted ranking
 
-Fetch Artificial Analysis raw data if MCP is unavailable and you have API access:
+Fetch OpenRouter's source-specific benchmark data using `OPENROUTER_API_KEY` from the process environment (a regular key is sufficient):
+
+```bash
+python scripts/model_finder.py benchmarks --source artificial-analysis --task-type coding --max-results 20 --output .model-finder/benchmarks.json
+python scripts/model_finder.py benchmarks --source design-arena --arena models --category uicomponent --output .model-finder/design.json
+```
+
+The default source is Artificial Analysis; `--arena` and `--category` are Design Arena filters. Raw rows and `response.meta` remain intact, including citation and dataset timestamp fields. The snapshot is not the normalized `--benchmarks` ranking input: read [benchmarks.md](benchmarks.md), verify IDs and configurations, then construct the evidence file below. Do not assume every benchmark row is a currently available model.
+
+You can also fetch Artificial Analysis directly if you have its API access:
 
 ```bash
 python scripts/model_finder.py fetch --source artificial-analysis --output .model-finder/aa.json
 ```
 
-Set `AA_API_KEY` in the process environment, never on a command line or in a committed file. Fetching may consume your data-plan quota. Authentication failures are explicit; the helper does not fall back to fabricated scores. Its AA snapshot is **raw evidence**, not an automatic name join.
+Set `AA_API_KEY` in the process environment, never on a command line or in a committed file. Fetching may consume source quotas. Authentication failures are explicit; the helper does not fall back to fabricated scores. Both benchmark sources produce **raw evidence**, not automatic name joins. Account analytics is a separate optional workflow with different credentials; the helper does not query it.
 
 Create an explicit evidence file after verifying identities against the catalog. Use one comparable metric, version, and configuration per file:
 

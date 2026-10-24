@@ -120,6 +120,12 @@ opencode mcp auth artificial-analysis
 
 Only the first connection is needed to start. See [OpenCode remote MCP and OAuth](https://opencode.ai/docs/mcp-servers/).
 
+### Optional upstream skills
+
+Model Finder references the official [openrouter-benchmarks](https://openrouter.ai/skills/openrouter-benchmarks) and [openrouter-analytics](https://openrouter.ai/skills/openrouter-analytics) skills without bundling or automatically installing them. Their pages provide installation instructions if you want the full upstream workflows.
+
+The helper's direct `benchmarks` command uses a regular `OPENROUTER_API_KEY`; MCP OAuth credentials are not automatically available to Python. Account analytics requires a management key and is only relevant to requests based on existing account usage. Keep these credentials in the appropriate tool environment, outside this repository. No management key is needed to discover models.
+
 ### Optional browser access
 
 Web/search capabilities can fill gaps without a browser MCP. If your workflow needs public interactive pages, [Microsoft Playwright MCP](https://github.com/microsoft/playwright-mcp) is an optional fallback. It is not bundled or installed automatically. For example:

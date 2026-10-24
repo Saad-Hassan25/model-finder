@@ -1,6 +1,6 @@
 ---
 name: model-finder
-description: Find and compare current AI models for a task using live OpenRouter pricing, capabilities, provider endpoints, and Artificial Analysis benchmarks. Use for cheapest viable, best value, highest quality, fastest, or recent model recommendations, including model choices while building an application. Does not automatically switch the coding agent's own model.
+description: Find and compare current AI models for a task using live OpenRouter pricing, capabilities, provider endpoints, and independent benchmarks. Use for cheapest viable, best value, highest quality, fastest, or recent model recommendations, including model choices in application code and replacements for existing workloads. Does not automatically switch the coding agent's own model.
 license: MIT
 ---
 
@@ -14,11 +14,13 @@ Extract task, objective, modalities, required tools/JSON schema, context and out
 
 For numeric forecasting, training, embeddings, or other specialized workloads, first check whether a generative OpenRouter model fits. General intelligence scores do not establish forecasting accuracy, extraction correctness, or tool reliability.
 
+For replacement recommendations based on the user's existing spend or traffic, read [references/usage.md](references/usage.md). Use authorized usage aggregates to ground workload estimates; ordinary model discovery does not need account analytics.
+
 ## Gather live evidence
 
 1. Record the check time. Discover the connected tools and their schemas; tool names below are hints, not a guarantee of availability.
 2. Query the live **OpenRouter** catalog. Its MCP typically offers `list-models`, `get-model`, `list-model-endpoints`, and `list-benchmarks`. Filter hard constraints before ranking. Inspect endpoints for finalists: advertised model-level features and minimum prices may come from different providers. Verify one usable route supports the combination of requirements, context, output length, pricing, and data policies. A missing field is unknown.
-3. Use **Artificial Analysis** for relevant independent evidence. OpenRouter can already expose AA results; a separate AA connection is a cross-check, not an installation requirement. Record metric/version, evaluation configuration and date where available. Distinguish aggregate indices from individual evaluations, and independently measured results from vendor claims.
+3. Use **Artificial Analysis** for relevant independent evidence and **Design Arena** where the task fits its categories. OpenRouter can expose both; a separate AA connection is a cross-check. Read [references/benchmarks.md](references/benchmarks.md) for source-specific interpretation, metadata, and benchmark-ID availability checks. Distinguish aggregate indices from individual evaluations, and independently measured results from vendor claims.
 4. Match model identities explicitly across sources: release, revision, reasoning setting, quantization, and variant must agree. Never attach scores by approximate display-name matching. Missing or inaccessible benchmark data means unmeasured, not zero. Do not copy a base model's scores onto a free/modified variant without stating what is and is not established. Dynamic `~provider/model` aliases can change their target; resolve and pin the underlying release for reproducible deployments.
 5. Inspect recent catalog additions alongside established candidates. OpenRouter `created` means catalog addition, not necessarily original release. New models can remain promising unbenchmarked alternatives.
 

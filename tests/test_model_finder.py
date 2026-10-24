@@ -11,6 +11,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 from urllib.error import HTTPError, URLError
+from urllib.parse import parse_qs, urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 HELPER = ROOT / "skills/model-finder/scripts/model_finder.py"
@@ -229,6 +230,70 @@ class NetworkTests(unittest.TestCase):
     def test_redirects_are_refused(self):
         with self.assertRaises(finder.FinderError):
             finder.NoRedirects().redirect_request(None, None, 302, "", {}, "https://attacker.invalid")
+
+
+class BenchmarkFetchTests(unittest.TestCase):
+    def options(self, *arguments):
+        return finder.parser().parse_args(["benchmarks", *arguments])
+
+    def test_bearer_get_preserves_dataset_metadata_and_keeps_key_out_of_output(self):
+        payload = {"data": [{"model_permaslug": "example/revision", "coding_index": 80}],
+                   "meta": {"citation": "Synthetic attribution", "source_url": "https://example.com/eval",
+                            "as_of": "2026-01-01T00:00:00Z", "version": "demo-1"}}
+        with patch.dict(finder.os.environ, {"OPENROUTER_API_KEY": "SECRET"}), patch.object(finder, "build_opener") as build:
+            build.return_value.open.return_value = io.BytesIO(json.dumps(payload).encode())
+            result = finder.fetch_benchmarks(self.options("--task-type", "coding", "--max-results", "7"))
+            request = build.return_value.open.call_args.args[0]
+            self.assertEqual(request.get_method(), "GET")
+            self.assertIsNone(request.data)
+            self.assertEqual(request.get_header("Authorization"), "Bearer SECRET")
+            self.assertIsNone(request.get_header("X-api-key"))
+            self.assertEqual(parse_qs(urlsplit(request.full_url).query),
+                             {"source": ["artificial-analysis"], "task_type": ["coding"], "max_results": ["7"]})
+            self.assertEqual(result["response"], payload)
+            self.assertNotIn("SECRET", json.dumps(result))
+
+    def test_design_arena_filters_are_encoded(self):
+        with patch.dict(finder.os.environ, {"OPENROUTER_API_KEY": "SECRET"}), patch.object(finder, "fetch_json") as fetch:
+            fetch.return_value = {"response": {"data": [], "meta": {"citation": None}}}
+            finder.fetch_benchmarks(self.options("--source", "design-arena", "--arena", "models", "--category", "svg&unexpected=true"))
+            url = fetch.call_args.args[0]
+            query = parse_qs(urlsplit(url).query)
+            self.assertEqual(query["category"], ["svg&unexpected=true"])
+            self.assertNotIn("unexpected", query)
+            self.assertEqual(query["arena"], ["models"])
+
+    def test_missing_key_does_not_make_a_request(self):
+        with patch.dict(finder.os.environ, {}, clear=True), patch.object(finder, "fetch_json") as fetch, contextlib.redirect_stderr(io.StringIO()) as error:
+            self.assertEqual(finder.main(["benchmarks"]), 1)
+            fetch.assert_not_called()
+            self.assertIn("regular OpenRouter key", error.getvalue())
+
+    def test_design_filters_on_aa_are_rejected_before_network(self):
+        for arguments in (("--arena", "models"), ("--category", "svg")):
+            with self.subTest(arguments=arguments), patch.object(finder, "fetch_json") as fetch, self.assertRaises(finder.FinderError):
+                finder.fetch_benchmarks(self.options(*arguments))
+            fetch.assert_not_called()
+
+    def test_missing_meta_or_wrong_row_shape_fails_explicitly(self):
+        for payload in ({"data": []}, {"data": {}, "meta": {}}):
+            with self.subTest(payload=payload), patch.dict(finder.os.environ, {"OPENROUTER_API_KEY": "SECRET"}), patch.object(finder, "fetch_json") as fetch:
+                fetch.return_value = {"response": payload}
+                with self.assertRaises(finder.FinderError):
+                    finder.fetch_benchmarks(self.options())
+
+    def test_zero_result_limit_is_a_usage_error(self):
+        with contextlib.redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+            self.options("--max-results", "0")
+        self.assertEqual(error.exception.code, 2)
+
+    def test_aa_header_remains_separate_from_openrouter_auth(self):
+        with patch.object(finder, "build_opener") as build:
+            build.return_value.open.return_value = io.BytesIO(b'{"data": []}')
+            finder.fetch_json(finder.ARTIFICIAL_ANALYSIS, api_key="AA-SECRET")
+            request = build.return_value.open.call_args.args[0]
+            self.assertEqual(request.get_header("X-api-key"), "AA-SECRET")
+            self.assertIsNone(request.get_header("Authorization"))
 
 
 class CLITests(unittest.TestCase):

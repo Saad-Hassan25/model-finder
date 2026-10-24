@@ -13,11 +13,12 @@ from pathlib import Path
 import re
 import sys
 from urllib.error import HTTPError, URLError
-from urllib.parse import quote, urlsplit
+from urllib.parse import quote, urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
 
 VERSION = "0.1.0"
 OPENROUTER = "https://openrouter.ai/api/v1/models"
+OPENROUTER_BENCHMARKS = "https://openrouter.ai/api/v1/benchmarks"
 ARTIFICIAL_ANALYSIS = "https://artificialanalysis.ai/api/v2/language/models"
 MAX_BYTES = 32 * 1024 * 1024
 MILLION = Decimal(1_000_000)
@@ -93,10 +94,12 @@ class NoRedirects(HTTPRedirectHandler):
         raise FinderError("Source redirected. Check its current official API URL.")
 
 
-def fetch_json(url, api_key=None):
+def fetch_json(url, api_key=None, bearer_token=None):
     headers = {"Accept": "application/json", "User-Agent": f"model-finder/{VERSION}"}
     if api_key:
         headers["x-api-key"] = api_key
+    if bearer_token:
+        headers["Authorization"] = "Bearer " + bearer_token
     request = Request(url, headers=headers, method="GET")
     try:
         with build_opener(NoRedirects()).open(request, timeout=30) as response:
@@ -121,6 +124,25 @@ def fetch_json(url, api_key=None):
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), (list, dict)):
         raise FinderError("Source response must contain a data array or object; API schema may have changed.")
     return {"schema_version": 1, "source_url": url, "retrieved_at": timestamp(), "response": payload}
+
+
+def fetch_benchmarks(args):
+    if (args.arena or args.category) and args.source != "design-arena":
+        raise FinderError("--arena and --category require --source design-arena.")
+    key = os.environ.get("OPENROUTER_API_KEY")
+    if not key:
+        raise FinderError("Set OPENROUTER_API_KEY to a regular OpenRouter key, or use the MCP benchmark tools.")
+    params = {"source": args.source, "max_results": args.max_results}
+    for field in ("task_type", "arena", "category"):
+        value = getattr(args, field)
+        if value is not None:
+            params[field] = value
+    result = fetch_json(OPENROUTER_BENCHMARKS + "?" + urlencode(params),
+                        bearer_token=key)
+    payload = result["response"]
+    if not isinstance(payload.get("data"), list) or not isinstance(payload.get("meta"), dict):
+        raise FinderError("Benchmark response must contain data and meta; check the current API schema.")
+    return result
 
 
 def load_json(path):
@@ -372,6 +394,13 @@ def parser():
     endpoints = commands.add_parser("endpoints", help="Fetch provider details for an exact OpenRouter ID.")
     endpoints.add_argument("model_id")
     endpoints.add_argument("--output", type=Path)
+    benchmarks = commands.add_parser("benchmarks", help="Fetch source-specific OpenRouter benchmark evidence (key required).")
+    benchmarks.add_argument("--source", choices=("artificial-analysis", "design-arena"), default="artificial-analysis")
+    benchmarks.add_argument("--task-type", choices=("coding", "intelligence", "agentic"))
+    benchmarks.add_argument("--arena", choices=("models", "builders", "agents"))
+    benchmarks.add_argument("--category", help="Design Arena category, e.g. uicomponent, dataviz, or svg.")
+    benchmarks.add_argument("--max-results", type=positive_arg, default=20)
+    benchmarks.add_argument("--output", type=Path)
     rank = commands.add_parser("shortlist", help="Filter a saved catalog, calculate costs, and rank candidates.")
     rank.add_argument("--catalog", type=Path, required=True)
     rank.add_argument("--benchmarks", type=Path)
@@ -406,6 +435,8 @@ def main(argv=None):
                 result = fetch_json(ARTIFICIAL_ANALYSIS, api_key=key)
             else:
                 result = fetch_json(OPENROUTER)
+        elif args.command == "benchmarks":
+            result = fetch_benchmarks(args)
         elif args.command == "endpoints":
             if not valid_id(args.model_id):
                 raise FinderError("Use an exact author/model ID from the catalog, without URLs or query strings.")
