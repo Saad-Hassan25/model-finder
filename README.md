@@ -1,7 +1,7 @@
 # Model Finder
 
 <p align="center">
-  <img src="assets/brand/model-finder-banner.webp" alt="Model Finder — live prices, independent evidence" width="960">
+  <img src="assets/brand/model-finder-banner.webp" alt="Five connected tiles with one highlighted as the selected model" width="960">
 </p>
 
 <p align="center">
@@ -13,7 +13,6 @@
   <a href="#try-it-without-an-account">No-account trial</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#ask">Examples</a> ·
-  <a href="#how-it-works">How it works</a> ·
   <a href="docs/setup.md">Documentation</a> ·
   <a href="CONTRIBUTING.md">Contributing</a>
 </p>
@@ -125,36 +124,23 @@ The native Claude plugin uses `/model-finder:model-finder`. Need help? See [setu
 
 ### See it working
 
-![Model Finder clean-room installation and live catalog shortlist](assets/demo/model-finder-demo.png)
+Here is a real **price-only** example, recorded on **2026-11-01 at 17:20 PKT**.
 
-Actual packaged **npx** installs for all three clients, followed by the installed helper's account-free catalog fetch and price-only shortlist. This is a rendered [real command transcript](assets/demo/model-finder-demo.txt), not a host-agent chat recording. OAuth is reported as pending. [Verification details and remaining client checks](docs/release.md).
+**Task:** find three low-cost models to try for extracting financial figures from text.
 
-### Real output: 2026-11-01
+**Requirements:** text input, tool calling, JSON Schema output and at least 128K context. Batch jobs are allowed; free routes and changing model aliases are excluded.
 
-**Price-only top 3**, fetched **2026-11-01 at 12:20:51 UTC (17:20:51 PKT)**. Task: bulk financial-metric extraction from text. Required: text I/O, tools, JSON Schema, at least 128K context, sufficient output capacity; exclude free routes and dynamic aliases. Batch execution is allowed. Assume **10,000 input + 1,500 output tokens per chunk**, **1,000 chunks/month**.
+**Cost assumption:** each chunk uses 10,000 input tokens and produces 1,500 output tokens. Process 1,000 chunks per month.
 
-| Exact model ID | Input USD/M | Output USD/M | USD/chunk | USD/month |
-| --- | ---: | ---: | ---: | ---: |
-| [`openai/gpt-oss-120b`](https://openrouter.ai/openai/gpt-oss-120b) | 0.017 | 0.064 | 0.000266 | 0.266 |
-| [`mistralai/mistral-nemo`](https://openrouter.ai/mistralai/mistral-nemo) | 0.029 | 0.030 | 0.000335 | 0.335 |
-| [`openai/gpt-oss-20b:batch`](https://openrouter.ai/openai/gpt-oss-20b:batch) | 0.024 | 0.112 | 0.000408 | 0.408 |
+| Model | Input price per 1M tokens | Output price per 1M tokens | Estimated monthly cost |
+| --- | ---: | ---: | ---: |
+| [`openai/gpt-oss-120b`](https://openrouter.ai/openai/gpt-oss-120b) | $0.017 | $0.064 | **$0.266** |
+| [`mistralai/mistral-nemo`](https://openrouter.ai/mistralai/mistral-nemo) | $0.029 | $0.030 | **$0.335** |
+| [`openai/gpt-oss-20b:batch`](https://openrouter.ai/openai/gpt-oss-20b:batch) | $0.024 | $0.112 | **$0.408** |
 
-These are advertised catalog matches, **not validated extraction recommendations**. No benchmark input or inference was used; provider routes remain unverified. Costs exclude extra reasoning, caching, fees, retries and tiers. The batch pick requires asynchronous execution. Prices change. [Full dated example, source and reproduction commands](docs/demo-2026-11-01.md).
+**What this shows:** the helper found the cheapest catalog entries matching those filters and calculated their token costs. It did **not** test how accurately they extract financial figures or verify each provider route. The `:batch` pick is for queued jobs, not interactive chat.
 
-## How it works
-
-```mermaid
-flowchart TD
-    A[Your task, requirements, and budget] --> B[Model Finder skill]
-    B --> C[OpenRouter: live catalog, prices, provider routes]
-    B --> D[Independent benchmarks: Artificial Analysis and Design Arena]
-    B --> E[Web or browser: evidence gaps]
-    C --> F[Check constraints, identity, and workload cost]
-    D --> F
-    E --> F
-    F --> G[Cheapest viable · Best value · Highest quality]
-    G --> H[Evidence, exact IDs, caveats, and integration guidance]
-```
+Prices are from that dated run and can change. Estimates exclude extra reasoning, caching, fees, retries and pricing tiers. No models were called and no paid evaluation was run. [Full report, exact commands and installation test log](docs/demo-2026-11-01.md).
 
 ## A useful recommendation, with its limits
 
