@@ -1,16 +1,17 @@
 {
-  "name": "model-finder-skill",
+  "name": "model-finder",
   "version": "0.1.0",
-  "description": "Install Model Finder for Claude Code, Codex, and OpenCode with one guided command.",
+  "description": "Find AI models with live OpenRouter prices and benchmark evidence in Claude Code, Codex, and OpenCode.",
   "type": "module",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/Saad-Hassan25/Model-Selector.git" },
+  "repository": { "type": "git", "url": "https://github.com/Saad-Hassan25/model-finder.git" },
+  "keywords": ["claude-code", "codex", "opencode", "openrouter", "agent-skills", "model-selection", "benchmarks", "model-finder"],
   "bin": { "model-finder-install": "bin/install.mjs" },
   "engines": { "node": ">=22" },
   "files": [
     "bin/**/*.mjs", "skills/model-finder/SKILL.md", "skills/model-finder/LICENSE",
     "skills/model-finder/agents/*.yaml", "skills/model-finder/references/*.md", "skills/model-finder/scripts/*.py",
-    "docs/*.md", "examples/*.json", "assets/brand/*.png", "scripts/*.py",
+    "docs/*.md", "examples/*.json", "assets/brand/*.webp", "assets/demo/*.png", "assets/demo/*.txt", "scripts/*.py",
     ".claude-plugin/*.json", ".codex-plugin/*.json", ".agents/plugins/*.json", ".mcp.json",
     "INSTALL.md", "AGENTS.md", "CONTRIBUTING.md", "install.ps1", "install.sh"
   ],

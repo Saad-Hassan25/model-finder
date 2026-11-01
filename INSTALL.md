@@ -5,7 +5,7 @@
 Run in your VS Code terminal, another terminal, or the project where you want the skill:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector
+npx --yes github:Saad-Hassan25/model-finder
 ```
 
 You need Node.js 22+ (includes `npx`) and Git for the GitHub package source. The command downloads the installer for you. No manual clone, Python setup, or npm publication is required.
@@ -30,13 +30,13 @@ When a user gives you this repository and asks you to install it:
 For Codex in the current project:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector --agent codex --scope project --yes --json
+npx --yes github:Saad-Hassan25/model-finder --agent codex --scope project --yes --json
 ```
 
 For Claude Code across projects, when requested:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector --agent claude-code --scope global --yes --json
+npx --yes github:Saad-Hassan25/model-finder --agent claude-code --scope global --yes --json
 ```
 
 Use `--project-dir /absolute/path/to/project` if the terminal is elsewhere. Use `--agent claude-code,codex` for several clients. `--connections both` includes Artificial Analysis; `--connections none` installs only the skill. `--dry-run` returns the plan without changing files. `--replace` backs up and upgrades an existing different skill when the user has requested that upgrade.
@@ -85,7 +85,7 @@ Rerunning the same installation is safe: identical copies/settings are reused. T
 For broader Agent Skills clients, use the ecosystem CLI:
 
 ```bash
-npx skills add Saad-Hassan25/Model-Selector --skill model-finder
+npx skills add Saad-Hassan25/model-finder --skill model-finder
 ```
 
 That tool installs the skill and manages its own prompts/flags. It does not run Model Finder's MCP setup wizard. See [Skills CLI documentation](https://skills.sh/docs/cli) and the repository's [manual MCP setup](docs/setup.md#connect-research-data) when using that route.

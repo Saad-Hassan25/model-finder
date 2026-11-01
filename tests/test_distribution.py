@@ -82,6 +82,15 @@ class DistributionTests(unittest.TestCase):
                 for name in names:
                     self.assertFalse(any(part in name for part in ("Initial Work", "__pycache__", ".env", ".model-finder/", ".git/")), name)
 
+    def test_extracted_release_passes_its_own_validator(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            output = package.build(root / "release.zip")
+            extracted = root / "extracted"
+            with ZipFile(output) as archive:
+                archive.extractall(extracted)
+            self.assertEqual(validator.validate(extracted), [])
+
 
 if __name__ == "__main__":
     unittest.main()

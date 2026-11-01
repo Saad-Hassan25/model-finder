@@ -1,7 +1,7 @@
 {
   "name": "model-finder",
   "version": "0.1.0",
-  "description": "Find the right AI model for your task using live OpenRouter data and independent benchmarks.",
+  "description": "Find AI models with live OpenRouter prices and benchmark evidence in Claude Code, Codex, and OpenCode.",
   "author": { "name": "Model Finder contributors" },
   "license": "MIT",
   "keywords": ["models", "openrouter", "benchmarks", "model-selection", "artificial-analysis"]

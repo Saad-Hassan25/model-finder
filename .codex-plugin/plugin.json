@@ -1,7 +1,7 @@
 {
   "name": "model-finder",
   "version": "0.1.0",
-  "description": "Find AI models by task, cost, capabilities, and independent benchmark evidence.",
+  "description": "Find AI models with live OpenRouter prices and benchmark evidence in Claude Code, Codex, and OpenCode.",
   "skills": "./skills/",
   "mcpServers": "./.mcp.json"
 }

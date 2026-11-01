@@ -5,12 +5,16 @@
 Run from your terminal in any directory:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector
+npx --yes github:Saad-Hassan25/model-finder
 ```
 
 Choose your clients, project/all-project scope, data connections, and whether to sign in. The installer handles skill files and MCP configuration together. Node.js 22+ and Git are required; Python is only needed for the optional research helper.
 
 For non-interactive installation, upgrades, paths, and JSON results, see [INSTALL.md](../INSTALL.md). The sections below describe alternative/manual routes and how to manage individual connections after installation.
+
+Documentation and installed CLI syntax were checked on **2026-11-01**. See the [release verification record](release.md) for client versions, clean-room install results and the distinction between documented OAuth steps and completed sign-in. A successful install can still require workspace trust and provider consent.
+
+In a fresh Claude Code project, `claude mcp get openrouter` can show **Pending approval (run `claude` to approve)**. Approve the project connection in Claude before signing in. Codex project settings require workspace trust; after trusting the project, `codex mcp get openrouter` should show the configured HTTP URL. These states are separate from successful OAuth.
 
 ## Pick an installation route
 

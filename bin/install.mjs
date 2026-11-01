@@ -10,10 +10,10 @@ import { AGENTS, LABELS, InstallError, createPlan, publicPlan, applyPlan } from 
 const HELP = `Model Finder installer
 
 Run without flags for the guided installer:
-  npx --yes github:Saad-Hassan25/Model-Selector
+  npx --yes github:Saad-Hassan25/model-finder
 
 For agents and automation:
-  npx --yes github:Saad-Hassan25/Model-Selector --agent codex --scope project --yes --json
+  npx --yes github:Saad-Hassan25/model-finder --agent codex --scope project --yes --json
 
 Options:
   --agent NAME          claude-code (or claude), codex, opencode, all

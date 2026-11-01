@@ -1,10 +1,12 @@
+# Model Finder
+
 <p align="center">
-  <img src="assets/brand/model-finder-banner.png" alt="Model Finder — live prices, independent evidence" width="960">
+  <img src="assets/brand/model-finder-banner.webp" alt="Model Finder — live prices, independent evidence" width="960">
 </p>
 
 <p align="center">
   <strong>Find the right model for your next task.</strong><br>
-  Live model discovery and evidence-based recommendations for Claude Code, Codex, and OpenCode.
+  Find AI models with live OpenRouter prices and benchmark evidence in Claude Code, Codex, and OpenCode.
 </p>
 
 <p align="center">
@@ -17,7 +19,7 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22d3ee?style=flat-square&amp;labelColor=111827" alt="License: MIT"></a>
-  <a href=".claude-plugin/plugin.json"><img src="https://img.shields.io/badge/version-0.1.0-a78bfa?style=flat-square&amp;labelColor=111827" alt="Version: 0.1.0"></a>
+  <a href="https://github.com/Saad-Hassan25/model-finder/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/version-0.1.0-a78bfa?style=flat-square&amp;labelColor=111827" alt="Version: 0.1.0"></a>
   <a href="#optional-helper"><img src="https://img.shields.io/badge/helper-Python_3.10%2B-60a5fa?style=flat-square&amp;labelColor=111827" alt="Optional helper: Python 3.10+"></a>
   <a href="docs/setup.md#connect-research-data"><img src="https://img.shields.io/badge/data-MCP_%2B_REST-34d399?style=flat-square&amp;labelColor=111827" alt="Data access: MCP and REST"></a>
 </p>
@@ -49,7 +51,7 @@ Use it directly when choosing a model, or let your coding agent use it while bui
 Run this in your VS Code terminal or any terminal:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector
+npx --yes github:Saad-Hassan25/model-finder
 ```
 
 The installer asks **which clients** (Claude Code, Codex, OpenCode, or several), **this project or all projects**, and **which data sources** to connect. It installs the skill, merges MCP settings, and can launch browser sign-in. Start a new client session when it finishes.
@@ -61,14 +63,14 @@ The installer asks **which clients** (Claude Code, Codex, OpenCode, or several),
 Give Claude Code, Codex, or OpenCode this prompt:
 
 ```text
-Install Model Finder from https://github.com/Saad-Hassan25/Model-Selector
+Install Model Finder from https://github.com/Saad-Hassan25/model-finder
 for this project. Follow INSTALL.md and report any sign-in I need to complete.
 ```
 
 Agents have a non-interactive installer with explicit scope and JSON output. For example, Codex in the current project:
 
 ```bash
-npx --yes github:Saad-Hassan25/Model-Selector --agent codex --scope project --yes --json
+npx --yes github:Saad-Hassan25/model-finder --agent codex --scope project --yes --json
 ```
 
 Use `--scope global` for all projects, `--agent claude-code` or `--agent opencode` for another client, and `--connections both` to include Artificial Analysis. See [INSTALL.md](INSTALL.md) for all flags, upgrades, and the agent installation contract.
@@ -78,7 +80,7 @@ Use `--scope global` for all projects, `--agent claude-code` or `--agent opencod
 If you use the Skills CLI, or want its wider client selection:
 
 ```bash
-npx skills add Saad-Hassan25/Model-Selector --skill model-finder
+npx skills add Saad-Hassan25/model-finder --skill model-finder
 ```
 
 This route installs the skill; use the [MCP connection guide](docs/setup.md#connect-research-data) for live data access. Native [Claude Code](docs/setup.md#claude-code-plugin) and [Codex](docs/setup.md#codex-plugin) plugins are also available. Choose one installation route per client.
@@ -101,6 +103,24 @@ Compare independent benchmarks and include promising recent releases.
 ```
 
 The native Claude plugin uses `/model-finder:model-finder`. Need help? See [setup and troubleshooting](docs/setup.md#check-the-setup).
+
+### See it working
+
+![Model Finder clean-room installation and live catalog shortlist](assets/demo/model-finder-demo.png)
+
+Actual packaged **npx** installs for all three clients, followed by the installed helper's account-free catalog fetch and price-only shortlist. This is a rendered [real command transcript](assets/demo/model-finder-demo.txt), not a host-agent chat recording. OAuth is reported as pending. [Verification details and remaining client checks](docs/release.md).
+
+### Real output: 2026-11-01
+
+**Price-only top 3**, fetched **2026-11-01 at 12:20:51 UTC (17:20:51 PKT)**. Task: bulk financial-metric extraction from text. Required: text I/O, tools, JSON Schema, at least 128K context, sufficient output capacity; exclude free routes and dynamic aliases. Batch execution is allowed. Assume **10,000 input + 1,500 output tokens per chunk**, **1,000 chunks/month**.
+
+| Exact model ID | Input USD/M | Output USD/M | USD/chunk | USD/month |
+| --- | ---: | ---: | ---: | ---: |
+| [`openai/gpt-oss-120b`](https://openrouter.ai/openai/gpt-oss-120b) | 0.017 | 0.064 | 0.000266 | 0.266 |
+| [`mistralai/mistral-nemo`](https://openrouter.ai/mistralai/mistral-nemo) | 0.029 | 0.030 | 0.000335 | 0.335 |
+| [`openai/gpt-oss-20b:batch`](https://openrouter.ai/openai/gpt-oss-20b:batch) | 0.024 | 0.112 | 0.000408 | 0.408 |
+
+These are advertised catalog matches, **not validated extraction recommendations**. No benchmark input or inference was used; provider routes remain unverified. Costs exclude extra reasoning, caching, fees, retries and tiers. The batch pick requires asynchronous execution. Prices change. [Full dated example, source and reproduction commands](docs/demo-2026-11-01.md).
 
 ## How it works
 
@@ -159,7 +179,7 @@ skills/model-finder/       Shared Agent Skill, references, and standalone helper
 .agents/plugins/          Native Codex marketplace entry
 .mcp.json                 Official research MCP endpoints; no credentials
 assets/brand/             Original logo and README banner
-examples/                 OpenCode config and clearly synthetic demo data
+examples/                 OpenCode config and clearly synthetic test data
 bin/                      Guided npx installer and MCP configuration
 scripts/                  Validation, release packaging, legacy Python copy helper
 INSTALL.md                Human and agent installation instructions
@@ -188,6 +208,6 @@ The ZIP builder uses an allowlist and excludes local notes, credentials, caches,
 
 ## Sources and license
 
-Integration formats and endpoints were checked on **2026-10-24** against the official [OpenRouter MCP documentation](https://openrouter.ai/blog/announcements/openrouter-mcp-server/), [Artificial Analysis MCP documentation](https://artificialanalysis.ai/data-api/docs/mcp), [Claude plugin reference](https://code.claude.com/docs/en/plugins-reference), [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills), [OpenAI plugin packaging](https://developers.openai.com/plugins/build/plugins), and [OpenCode skill documentation](https://opencode.ai/docs/skills/). Client support and provider APIs can change; setup links point to the maintained sources.
+Integration formats and documented endpoints were rechecked on **2026-11-01** against the official [OpenRouter MCP documentation](https://openrouter.ai/blog/announcements/openrouter-mcp-server/), [Artificial Analysis MCP documentation](https://artificialanalysis.ai/data-api/docs/mcp), [Claude plugin reference](https://code.claude.com/docs/en/plugins-reference), [Codex skill documentation](https://learn.chatgpt.com/docs/build-skills), [OpenAI plugin packaging](https://developers.openai.com/plugins/build/plugins), and [OpenCode skill documentation](https://opencode.ai/docs/skills/). This is a documentation/CLI check, not a claim of completed OAuth in every client. [Exact verification record and release checks](docs/release.md). Recheck on the actual publication day if it is later; preserve the dated demo's original run date.
 
 MIT for the code and skill. Provider data, benchmarks, trademarks, and services retain their own terms. This is an independent project, not affiliated with those providers.

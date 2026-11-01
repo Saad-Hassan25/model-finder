@@ -1,0 +1,29 @@
+MODEL FINDER 0.1.0 | clean-room launch check
+
+$ npx --yes --package <local tarball> -- model-finder-install --agent claude-code
+  --scope project --connections both --yes --json
+PASS  skill installed; MCP config written in temporary project
+PASS  offline helper: example/budget, example/balanced, example/premium
+PENDING  OAuth; no browser launched and no credentials used
+
+$ npx --yes --package <local tarball> -- model-finder-install --agent codex
+  --scope project --connections both --yes --json
+PASS  skill installed; MCP config written in temporary project
+PASS  offline helper: example/budget, example/balanced, example/premium
+PENDING  OAuth; no browser launched and no credentials used
+
+$ npx --yes --package <local tarball> -- model-finder-install --agent opencode
+  --scope project --connections both --yes --json
+PASS  skill installed; MCP config written in temporary project
+PASS  offline helper: example/budget, example/balanced, example/premium
+PENDING  OAuth; no browser launched and no credentials used
+
+$ python <installed skill>/scripts/model_finder.py fetch
+PASS  public OpenRouter catalog fetched without an account
+Fetched: 2026-11-01T12:20:51+00:00
+$ python <installed skill>/scripts/model_finder.py shortlist <constraints>
+PRICE-ONLY top 3 | 10,000 input + 1,500 output | 1,000 chunks/month
+openai/gpt-oss-120b: $0.017000000/M in, $0.064000000/M out; $0.266000000/month
+mistralai/mistral-nemo: $0.029000000/M in, $0.03000000/M out; $0.335000000/month
+openai/gpt-oss-20b:batch: $0.024000000/M in, $0.112000000/M out; $0.408000000/month
+Task accuracy and provider route unverified. No inference run.

@@ -35,6 +35,8 @@ def validate(root=ROOT):
     try:
         versions = [claude["version"], codex["version"], marketplace["plugins"][0]["version"]]
         package = json.loads((root / "package.json").read_text(encoding="utf-8"))
+        if package.get("name") != claude.get("name"):
+            errors.append("Package and plugin names must use the same model-finder identifier.")
         versions.append(package["version"])
         if package.get("bin") != {"model-finder-install": "bin/install.mjs"} or not (root / "bin/install.mjs").is_file():
             errors.append("The npm package must expose the guided installer.")

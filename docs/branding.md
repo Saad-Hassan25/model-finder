@@ -2,10 +2,12 @@
 
 The mark represents candidate paths converging on a selected model. Cyan, blue, and violet ribbons surround a mint selection point. The README banner pairs the mark with the Model Finder wordmark on a dark technical grid.
 
-- [Transparent logo](../assets/brand/model-finder-logo.png): square PNG for repository artwork and other compact uses.
-- [README banner](../assets/brand/model-finder-banner.png): wide PNG with the wordmark and tagline, designed to stay legible in both GitHub themes.
+- [Transparent logo](../assets/brand/model-finder-logo.webp): square WebP for repository artwork and other compact uses.
+- [README banner](../assets/brand/model-finder-banner.webp): wide WebP with the wordmark and tagline, designed to stay legible in both GitHub themes.
 
 Both original assets were created with the built-in image generation tool. The repository license applies to the included assets. No upstream provider logos are included.
+
+For the 2026-11-01 launch preparation, the banner was resized to 1280 ? 533 and the transparent logo to 640 ? 640, then encoded as WebP (quality 88). Both are well below 200 KB. The original design and logo transparency are preserved; generation prompts below document their origin.
 
 The badge versions describe the source package; they do not imply a published GitHub release or a successful hosted CI run. Once the repository has a public remote, a live workflow badge can point at its actual workflow URL.
 
