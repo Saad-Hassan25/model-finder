@@ -11,15 +11,52 @@ from urllib.parse import unquote
 ROOT = Path(__file__).resolve().parents[1]
 
 
-def validate(root=ROOT):
+def validate_skill_copy(root=ROOT):
+    """Check an optional local install against the canonical distributable skill."""
+    root = Path(root)
+    canonical = root / "skills/model-finder"
+    installed = root / ".agents/skills/model-finder"
+    # Release archives intentionally ship only the canonical skill.
+    if not installed.exists() and not installed.is_symlink():
+        return []
+    if not canonical.is_dir() or not installed.is_dir():
+        return ["Canonical skill and local .agents/skills/model-finder copy must be directories."]
+
+    def files(folder):
+        return {path.relative_to(folder): path for path in folder.rglob("*")
+                if path.is_file() and "__pycache__" not in path.relative_to(folder).parts
+                and path.suffix not in (".pyc", ".pyo")}
+
+    def content(path):
+        data = path.read_bytes()
+        if path.name == "LICENSE" or path.suffix in (".md", ".py", ".yaml", ".yml", ".json", ".toml", ".txt", ".sh", ".ps1"):
+            return data.replace(b"\r\n", b"\n")
+        return data
+
     errors = []
+    try:
+        source_files, copy_files = files(canonical), files(installed)
+        for relative in sorted(source_files.keys() - copy_files.keys()):
+            errors.append(f"Local skill copy missing file: .agents/skills/model-finder/{relative.as_posix()}")
+        for relative in sorted(copy_files.keys() - source_files.keys()):
+            errors.append(f"Local skill copy has extra file: .agents/skills/model-finder/{relative.as_posix()}")
+        for relative in sorted(source_files.keys() & copy_files.keys()):
+            if content(source_files[relative]) != content(copy_files[relative]):
+                errors.append(f"Local skill copy differs: .agents/skills/model-finder/{relative.as_posix()}; refresh it from skills/model-finder/.")
+    except OSError:
+        errors.append("Cannot read canonical or local skill copy for synchronization validation.")
+    return errors
+
+
+def validate(root=ROOT):
+    errors = validate_skill_copy(root)
     manifests = []
     for name in (".claude-plugin/plugin.json", ".codex-plugin/plugin.json", ".claude-plugin/marketplace.json", ".mcp.json"):
         try:
             manifests.append(json.loads((root / name).read_text(encoding="utf-8")))
         except (OSError, ValueError):
             errors.append(f"Missing or invalid JSON: {name}")
-    if errors:
+    if len(manifests) != 4:
         return errors
     claude, codex, marketplace, mcp = manifests
     try:
@@ -102,4 +139,4 @@ if __name__ == "__main__":
         for failure in failures:
             print(f"ERROR: {failure}", file=sys.stderr)
         raise SystemExit(1)
-    print("Validated plugin manifests, versions, skill entrypoint, and local documentation references.")
+    print("Validated plugin manifests, versions, skill entrypoint, local copy synchronization, and local documentation references.")

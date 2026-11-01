@@ -10,6 +10,7 @@
 </p>
 
 <p align="center">
+  <a href="#try-it-without-an-account">No-account trial</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#ask">Examples</a> ·
   <a href="#how-it-works">How it works</a> ·
@@ -31,6 +32,24 @@
 </p>
 
 ---
+
+**For Claude Code, Codex and OpenCode users choosing models on OpenRouter.** Model Finder provides research and recommendations. It is **not a runtime router or an automatic model-switcher, and it does not run paid evaluations**.
+
+## Try it without an account
+
+Download the [release ZIP](https://github.com/Saad-Hassan25/model-finder/releases/download/v0.1.0/model-finder.zip), extract it and open a terminal in that folder. With **Python 3.10+**, run:
+
+```bash
+python skills/model-finder/scripts/model_finder.py shortlist --catalog examples/catalog.example.json --benchmarks examples/benchmarks.example.json --objective value
+```
+
+**No Node.js, Git, API key, sign-in or network requests are needed for this offline run.** The output includes the price/quality frontier in this order:
+
+```text
+example/budget → example/balanced → example/premium
+```
+
+These are fictional models for demonstrating filtering and cost calculations; the more expensive, lower-scoring `example/dominated` is excluded. For real, dated output, see the [2026-11-01 price-only example](docs/demo-2026-11-01.md). When you want live research inside your coding client, continue to [Quick start](#quick-start).
 
 Model releases move quickly. Model Finder helps you choose using **current OpenRouter prices, capabilities, provider routes, and independent benchmark evidence**. Describe your task and budget; get exact model IDs, estimated workload costs, and a recommendation with its tradeoffs explained.
 
@@ -162,13 +181,7 @@ python skills/model-finder/scripts/model_finder.py benchmarks --source artificia
 
 This preserves source citations and dataset dates. Benchmark IDs still need verification against the live catalog before use. For replacement decisions based on existing traffic, the skill can also use authorized usage aggregates; see the optional [usage workflow](skills/model-finder/references/usage.md). Analytics access is separate from model discovery.
 
-Try a completely offline demonstration with fictional models:
-
-```bash
-python skills/model-finder/scripts/model_finder.py shortlist --catalog examples/catalog.example.json --benchmarks examples/benchmarks.example.json --objective value
-```
-
-For those synthetic examples, the frontier contains `example/budget`, `example/balanced`, and `example/premium`; the more expensive, lower-scoring `example/dominated` is excluded from the frontier. These are not real models or current benchmarks. See the [helper reference](skills/model-finder/references/helper.md) for benchmark mappings, JSON output, all ranking modes, and cost assumptions.
+For a credential-free first run, use the [offline trial](#try-it-without-an-account). See the [helper reference](skills/model-finder/references/helper.md) for benchmark mappings, JSON output, all ranking modes, and cost assumptions.
 
 ## Repository
 

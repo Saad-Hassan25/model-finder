@@ -1,6 +1,7 @@
 import importlib.util
 import os
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -19,6 +20,66 @@ def module(name):
 installer = module("install")
 package = module("package")
 validator = module("validate")
+
+
+class SkillCopyTests(unittest.TestCase):
+    def make_copy(self, root):
+        source = root / "skills/model-finder"
+        for name, content in (("SKILL.md", b"name: model-finder\n"),
+                              ("references/guide.md", b"Current guidance\n"),
+                              ("scripts/helper.py", b"print('example')\n"),
+                              ("assets/sample.bin", b"\x00\r\n")):
+            file = source / name
+            file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_bytes(content)
+        installed = root / ".agents/skills/model-finder"
+        shutil.copytree(source, installed)
+        return source, installed
+
+    def test_absent_local_copy_is_optional(self):
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertEqual(validator.validate_skill_copy(Path(temp)), [])
+
+    def test_equal_copy_allows_text_line_endings_and_python_caches(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            _, installed = self.make_copy(root)
+            (installed / "references/guide.md").write_bytes(b"Current guidance\r\n")
+            cache = installed / "scripts/__pycache__/helper.cpython-310.pyc"
+            cache.parent.mkdir()
+            cache.write_bytes(b"generated cache")
+            (installed / "scripts/helper.pyc").write_bytes(b"generated cache")
+            self.assertEqual(validator.validate_skill_copy(root), [])
+
+    def test_changed_reference_or_script_is_detected(self):
+        for name in ("SKILL.md", "references/guide.md", "scripts/helper.py"):
+            with self.subTest(file=name), tempfile.TemporaryDirectory() as temp:
+                root = Path(temp)
+                _, installed = self.make_copy(root)
+                (installed / name).write_bytes(b"stale contents\n")
+                errors = validator.validate_skill_copy(root)
+                self.assertEqual(len(errors), 1)
+                self.assertIn(name, errors[0])
+
+    def test_missing_and_extra_files_are_detected(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            _, installed = self.make_copy(root)
+            (installed / "references/guide.md").unlink()
+            (installed / "references/obsolete.md").write_text("old guidance", encoding="utf-8")
+            errors = validator.validate_skill_copy(root)
+            self.assertEqual(len(errors), 2)
+            self.assertTrue(any("missing file" in item and "references/guide.md" in item for item in errors))
+            self.assertTrue(any("extra file" in item and "references/obsolete.md" in item for item in errors))
+
+    def test_binary_files_are_compared_exactly(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            _, installed = self.make_copy(root)
+            (installed / "assets/sample.bin").write_bytes(b"\x00\n")
+            errors = validator.validate_skill_copy(root)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("assets/sample.bin", errors[0])
 
 
 class InstallerTests(unittest.TestCase):
@@ -90,6 +151,20 @@ class DistributionTests(unittest.TestCase):
             with ZipFile(output) as archive:
                 archive.extractall(extracted)
             self.assertEqual(validator.validate(extracted), [])
+
+    def test_repository_validation_rejects_a_stale_local_install(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            output = package.build(root / "release.zip")
+            extracted = root / "extracted"
+            with ZipFile(output) as archive:
+                archive.extractall(extracted)
+            installed = extracted / ".agents/skills/model-finder"
+            shutil.copytree(extracted / "skills/model-finder", installed)
+            (installed / "references/sources.md").write_text("stale sources", encoding="utf-8")
+            errors = validator.validate(extracted)
+            self.assertEqual(len(errors), 1)
+            self.assertIn("references/sources.md", errors[0])
 
 
 if __name__ == "__main__":
